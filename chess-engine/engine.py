@@ -28,8 +28,8 @@ def moves(key):
         print m
         for x in m:
             if board[x] == "p" or board[x] == "r" or board[x] == "n" or board[x] == "b" or board[x] == "k" or board[x] == "q":
-                m[m.index(x)]=="."
-                print "poo"
+                m[m.index(x)]="."
+                print "own piece check ran"
         return m
     pass
 
