@@ -6,14 +6,8 @@ from engine import board, moves, move
 #     print(keylewis)
 #     print(moves(keylewis))
 #     print("---")
-a=["A8","A7"]
-for x in a: 
-    if board[x] == "p" or board[x] == "r" or board[x] == "n" or board[x] == "b" or board[x] == "k" or board[x] == "q":
-                a[a.index(x)]="."
-                print "poo"
-                
 
-move("A8","A6")
-print a
-print board["A6"]
-print moves("A7")
+
+move("C8","C5")
+print board["C5"]
+print moves("C5")
