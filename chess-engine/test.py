@@ -8,6 +8,6 @@ from engine import board, moves, move
 #     print("---")
 
 
-move("C8","C5")
-print board["C5"]
-print moves("C5")
+move("E8","E5")
+print board["E5"]
+print moves("E5")

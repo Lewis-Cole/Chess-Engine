@@ -101,10 +101,67 @@ def moves(key):
                 break
             else:
                 m_NW.append(alphabet[letter_index - x] + str(number_index - x))
-            print x
         m.append([m_NE,m_SE,m_SW,m_NW])
         return m
-    
+
+    if board[key] == "q":
+        m = []
+        m_north = []
+        m_south = []
+        m_east = []
+        m_west = []
+        m_NE = []
+        m_SE = []
+        m_SW = []
+        m_NW = []
+        n_dist = number_index-1
+        e_dist = 7-letter_index
+        s_dist = 8-number_index
+        w_dist = letter_index 
+        for x in range(1, min(n_dist,e_dist)+1):
+            if board[alphabet[letter_index + x]+str(number_index - x)] == "r" or board[alphabet[letter_index + x]+str(number_index - x)] == "n" or board[alphabet[letter_index + x]+str(number_index - x)] == "b" or board[alphabet[letter_index + x]+str(number_index - x)] == "k" or board[alphabet[letter_index + x]+str(number_index - x)] == "q" or board[alphabet[letter_index + x]+str(number_index - x)] == "p":          
+                break
+            else:
+                m_NE.append(alphabet[letter_index + x] + str(number_index - x))
+        for x in range(1, min(s_dist,e_dist)+1):
+            if board[alphabet[letter_index + x]+str(number_index + x)] == "r" or board[alphabet[letter_index + x]+str(number_index + x)] == "n" or board[alphabet[letter_index + x]+str(number_index + x)] == "b" or board[alphabet[letter_index + x]+str(number_index + x)] == "k" or board[alphabet[letter_index + x]+str(number_index + x)] == "q" or board[alphabet[letter_index + x]+str(number_index + x)] == "p":
+                break
+            else:
+                m_SE.append(alphabet[letter_index + x] + str(number_index + x))
+        for x in range(1, min(s_dist,w_dist)+1):
+            if board[alphabet[letter_index - x]+str(number_index + x)] == "r" or board[alphabet[letter_index - x]+str(number_index + x)] == "n" or board[alphabet[letter_index - x]+str(number_index + x)] == "b" or board[alphabet[letter_index - x]+str(number_index + x)] == "k" or board[alphabet[letter_index - x]+str(number_index + x)] == "q" or board[alphabet[letter_index - x]+str(number_index + x)] == "p":
+                break
+            else:
+                m_SW.append(alphabet[letter_index - x] + str(number_index + x))
+        for x in range(1, min(n_dist,w_dist)+1):
+            if board[alphabet[letter_index - x]+str(number_index - x)] == "r" or board[alphabet[letter_index - x]+str(number_index - x)] == "n" or board[alphabet[letter_index - x]+str(number_index - x)] == "b" or board[alphabet[letter_index - x]+str(number_index - x)] == "k" or board[alphabet[letter_index - x]+str(number_index - x)] == "q" or board[alphabet[letter_index - x]+str(number_index - x)] == "p":
+                break
+            else:
+                m_NW.append(alphabet[letter_index - x] + str(number_index - x))
+        
+        for x in range((-1*int(key[1]))+1,0):
+            if board[key[0]+str(-1*x)] == "r" or board[key[0]+str(-1*x)] == "n" or board[key[0]+str(-1*x)] == "b" or board[key[0]+str(-1*x)] == "k" or board[key[0]+str(-1*x)] == "q" or board[key[0]+str(-1*x)] == "p":
+                break
+            else:
+                m_north.append(key[0]+str(-1*x))
+        for x in range(int(key[1])+1,9):
+            if board[key[0]+str(x)] == "r" or board[key[0]+str(x)] == "n" or board[key[0]+str(x)] == "b" or board[key[0]+str(x)] == "k" or board[key[0]+str(x)] == "q" or board[key[0]+str(x)] == "p":    
+                break
+            else:
+                m_south.append(key[0]+str(x))
+        for x in range(alphabet.index(key[0])+1,8):
+            if board[alphabet[x]+key[1]] == "r" or board[alphabet[x]+key[1]] == "n" or board[alphabet[x]+key[1]] == "b" or board[alphabet[x]+key[1]] == "k" or board[alphabet[x]+key[1]] == "q" or board[alphabet[x]+key[1]] == "p":
+                break
+            else:
+                m_east.append(alphabet[x]+key[1])
+        for x in range((-1*alphabet.index(key[0]))+1,1):
+            if board[alphabet[-1*x]+key[1]] == "r" or board[alphabet[-1*x]+key[1]] == "n" or board[alphabet[-1*x]+key[1]] == "b" or board[alphabet[-1*x]+key[1]] == "k" or board[alphabet[-1*x]+key[1]] == "q" or board[alphabet[-1*x]+key[1]] == "p":    
+                break
+            else:
+                m_west.append(alphabet[-1*x]+key[1])
+        m.append([m_north,m_east,m_south,m_west,m_NE,m_SE,m_SW,m_NW])
+        return m
+
     pass
 
 
