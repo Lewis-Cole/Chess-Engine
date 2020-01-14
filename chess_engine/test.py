@@ -9,5 +9,5 @@ from engine import board, moves, move
 
 
 move("E8","E5")
-print board["E5"]
-print moves("E5")
+print(board["E5"])
+print(moves("E5"))
