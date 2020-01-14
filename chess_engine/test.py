@@ -1,7 +1,7 @@
 """Testing file."""
 
 from rules import starting_board
-from engine import find_moves
+from legal_moves import find_moves
 
 x = find_moves(starting_board, "w")
 

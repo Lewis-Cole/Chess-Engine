@@ -38,8 +38,6 @@ def pawn_moves(board, colour_string, square_list):
                 if board[move_4[0]][move_4[1]] in black_pieces:
                     legal_moves.append(move_4)
 
-        return legal_moves
-
     # consider moves if pawn is black
     if colour_string == "b":
         # one square forward
@@ -66,7 +64,7 @@ def pawn_moves(board, colour_string, square_list):
                 if board[move_4[0]][move_4[1]] in white_pieces:
                     legal_moves.append(move_4)
 
-        return legal_moves
+    return "Pawn \t from %s to %s" % (square_list, legal_moves)
 
 
 def rook_moves(board, colour_string, square_list):
@@ -148,7 +146,7 @@ def rook_moves(board, colour_string, square_list):
         else:
             go_left = False
 
-    return legal_moves
+    return "Rook \t from %s to %s" % (square_list, legal_moves)
 
 
 def knight_moves(board, colour_string, square_list):
@@ -226,7 +224,7 @@ def knight_moves(board, colour_string, square_list):
         ):
             legal_moves.append(move_8)
 
-    return legal_moves
+    return "Knight \t from %s to %s" % (square_list, legal_moves)
 
 
 def bishop_moves(board, colour_string, square_list):
@@ -307,7 +305,7 @@ def bishop_moves(board, colour_string, square_list):
         else:
             go_upleft = False
 
-    return legal_moves
+    return "Bishop \t from %s to %s" % (square_list, legal_moves)
 
 
 def queen_moves(board, colour_string, square_list):
@@ -456,7 +454,7 @@ def queen_moves(board, colour_string, square_list):
         else:
             go_upleft = False
 
-    return legal_moves
+    return "Queen \t from %s to %s" % (square_list, legal_moves)
 
 
 def king_moves(board, colour_string, square_list):
@@ -533,7 +531,7 @@ def king_moves(board, colour_string, square_list):
         ):
             legal_moves.append(move_8)
 
-    return legal_moves
+    return "King \t from %s to %s" % (square_list, legal_moves)
 
 
 # Function for outputting all legal moves
@@ -551,51 +549,27 @@ def find_moves(board, colour_string):
             if piece in player_pieces:
                 if piece == "P" or piece == "p":
                     legal_moves.append(
-                        [
-                            "Pawn",
-                            pawn_moves(board, colour_string, [row_index, column_index]),
-                        ]
+                        pawn_moves(board, colour_string, [row_index, column_index]),
                     )
                 if piece == "R" or piece == "r":
                     legal_moves.append(
-                        [
-                            "Rook",
-                            rook_moves(board, colour_string, [row_index, column_index]),
-                        ]
+                        rook_moves(board, colour_string, [row_index, column_index]),
                     )
                 if piece == "N" or piece == "n":
                     legal_moves.append(
-                        [
-                            "Knight",
-                            knight_moves(
-                                board, colour_string, [row_index, column_index]
-                            ),
-                        ]
+                        knight_moves(board, colour_string, [row_index, column_index]),
                     )
                 if piece == "B" or piece == "b":
                     legal_moves.append(
-                        [
-                            "Bishop",
-                            bishop_moves(
-                                board, colour_string, [row_index, column_index]
-                            ),
-                        ]
+                        bishop_moves(board, colour_string, [row_index, column_index]),
                     )
                 if piece == "Q" or piece == "q":
                     legal_moves.append(
-                        [
-                            "Queen",
-                            queen_moves(
-                                board, colour_string, [row_index, column_index]
-                            ),
-                        ]
+                        queen_moves(board, colour_string, [row_index, column_index]),
                     )
                 if piece == "K" or piece == "k":
                     legal_moves.append(
-                        [
-                            "King",
-                            king_moves(board, colour_string, [row_index, column_index]),
-                        ]
+                        king_moves(board, colour_string, [row_index, column_index]),
                     )
 
     return legal_moves
