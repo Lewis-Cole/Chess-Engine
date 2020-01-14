@@ -1,4 +1,4 @@
-"""The Chess Engine."""
+"""Find the legal moves for all pieces."""
 
 
 from rules import white_pieces, black_pieces
