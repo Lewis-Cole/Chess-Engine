@@ -1,356 +1,601 @@
-#engine here
-board = {
-    "A1": "R","B1": "N","C1": "B","D1": "K","E1": "Q","F1": "B","G1": "N","H1": "R",
-    "A2": "P","B2": "P","C2": "P","D2": "P","E2": "P","F2": "P","G2": "P","H2": "P",
-    "A3": ".","B3": ".","C3": ".","D3": ".","E3": ".","F3": ".","G3": ".","H3": ".",
-    "A4": ".","B4": ".","C4": ".","D4": ".","E4": ".","F4": ".","G4": ".","H4": ".",
-    "A5": ".","B5": ".","C5": ".","D5": ".","E5": ".","F5": ".","G5": ".","H5": ".",
-    "A6": ".","B6": ".","C6": ".","D6": ".","E6": ".","F6": ".","G6": ".","H6": ".",
-    "A7": "p","B7": "p","C7": "p","D7": "p","E7": "p","F7": "p","G7": "p","H7": "p",
-    "A8": "r","B8": "n","C8": "b","D8": "k","E8": "q","F8": "b","G8": "n","H8": "r",
-}
-
-board_list = ["A1", "B1","C1","D1","E1","F1","G1", "H1","A2","B2","C2","D2","E2","F2","G2","H2","A3","B3","C3","D3","E3","F3","G3","H3","A4","B4","C4","D4","E4","F4","G4","H4","A5","B5","C5","D5","E5","F5","G5","H5","A6","B6","C6","D6","E6","F6","G6","H6","A7","B7","C7","D7","E7","F7","G7","H7","A8","B8","C8","D8","E8","F8","G8","H8"]
-
-tot_moves=[]
-n_alphabet = [".",".","A","B","C","D","E","F","G","H",".","."]
-alphabet = ["A","B","C","D","E","F","G","H"]
-numbers = ["1","2","3","4","5","6","7","8"]
-# takes string gives list
-def moves(key):
-    letter_index = alphabet.index(key[0])
-    n_letter_index = n_alphabet.index(key[0])
-    number_index = int(key[1])
+"""The Chess Engine."""
 
 
+from rules import white_pieces, black_pieces
 
-    if board[key] == "p":
-        m = []
-        a = key[0] + str(number_index - 1)
-        if number_index == 7:
-                b = key[0] + str(number_index - 2)
+
+# Functions for finding the legal move of each piece
+
+
+def pawn_moves(board, colour_string, square_list):
+    """Find all legal moves for a pawn."""
+    # create empty string to append legal moves
+    legal_moves = []
+
+    # consider moves if pawn is white
+    if colour_string == "w":
+        # one square forward
+        move_1 = [square_list[0] + 1, square_list[1]]
+        if 0 <= move_1[0] <= 7:
+            if board[move_1[0]][move_1[1]] == "":
+                legal_moves.append(move_1)
+
+                if square_list[0] == 1:
+                    # two squares forward
+                    move_2 = [square_list[0] + 2, square_list[1]]
+                    if 0 <= move_2[0] <= 7:
+                        if board[move_2[0]][move_2[1]] == "":
+                            legal_moves.append(move_2)
+
+            # diagonal captures
+            move_3 = [square_list[0] + 1, square_list[1] + 1]
+            if 0 <= move_3[1] <= 7:
+                if board[move_3[0]][move_3[1]] in black_pieces:
+                    legal_moves.append(move_3)
+
+            move_4 = [square_list[0] + 1, square_list[1] - 1]
+            if 0 <= move_4[1] <= 7:
+                if board[move_4[0]][move_4[1]] in black_pieces:
+                    legal_moves.append(move_4)
+
+        return legal_moves
+
+    # consider moves if pawn is black
+    if colour_string == "b":
+        # one square forward
+        move_1 = [square_list[0] - 1, square_list[1]]
+        if 0 <= move_1[0] <= 7:
+            if board[move_1[0]][move_1[1]] == "":
+                legal_moves.append(move_1)
+
+                if square_list[0] == 6:
+                    # two squares forward
+                    move_2 = [square_list[0] - 2, square_list[1]]
+                    if 0 <= move_2[0] <= 7:
+                        if board[move_2[0]][move_2[1]] == "":
+                            legal_moves.append(move_2)
+
+            # diagonal captures
+            move_3 = [square_list[0] - 1, square_list[1] + 1]
+            if 0 <= move_3[1] <= 7:
+                if board[move_3[0]][move_3[1]] in white_pieces:
+                    legal_moves.append(move_3)
+
+            move_4 = [square_list[0] - 1, square_list[1] - 1]
+            if 0 <= move_4[1] <= 7:
+                if board[move_4[0]][move_4[1]] in white_pieces:
+                    legal_moves.append(move_4)
+
+        return legal_moves
+
+
+def rook_moves(board, colour_string, square_list):
+    """Find all legal moves for a rook."""
+    legal_moves = []
+
+    # set the colour of opponents pieces
+    if colour_string == "w":
+        opponent_pieces = black_pieces
+
+    if colour_string == "b":
+        opponent_pieces = white_pieces
+
+    # going up
+    go_up = True
+    up_index = 1
+    while go_up:
+        move = [square_list[0] + up_index, square_list[1]]
+        up_index += 1
+        if 0 <= move[0] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_up = False
+            else:
+                go_up = False
         else:
-                b = "Q12"
-        c = n_alphabet[n_letter_index - 1] + str(number_index - 1)
-        d = n_alphabet[n_letter_index + 1] + str(number_index - 1)
-        consider = [a,b,c,d]
-        for x in range(0,4):
+            go_up = False
 
-            try:
-                if (board[consider[x]] == "P" or board[consider[x]] == "R" or board[consider[x]] == "B" or board[consider[x]] == "N" or board[consider[x]] == "Q" or board[consider[x]] == "K") and (x == 2 or x == 3):
-                    m.append(consider[x])
-
-                else:
-                    if board[consider[x]] == "p" or board[consider[x]] == "r" or board[consider[x]] == "b" or board[consider[x]] == "n" or board[consider[x]] == "q" or board[consider[x]] == "k" or board[consider[x]] == "P" or board[consider[x]] == "R" or board[consider[x]] == "B" or board[consider[x]] == "N" or board[consider[x]] == "Q" or board[consider[x]] == "K":
-                        consider[1] = "Q12"
-                        pass
-                    #due to order of iteration, when space infront has our piece, this will force an exception when considering b. b may be set to Q12 when considering other places, to no consequence, as b is checked before c & d.
-                    else:
-                        if x == 2 or x == 3:
-                                pass
-                        else:
-                                m.append(consider[x])
-            except(KeyError):
-                pass
-
-        print("pawn")
-        print(m)
-        return m
-
-
-    if board[key] == "r":
-        #there's a quicker way to do this using one for loop that I might implement in the future
-        m_north = []
-        m_south = []
-        m_east = []
-        m_west = []
-        #print("rook")
-        for x in range((-1*int(key[1]))+1,0):
-            if board[key[0]+str(-1*x)] == "r" or board[key[0]+str(-1*x)] == "n" or board[key[0]+str(-1*x)] == "b" or board[key[0]+str(-1*x)] == "k" or board[key[0]+str(-1*x)] == "q" or board[key[0]+str(-1*x)] == "p":
-                break
+    # going down
+    go_down = True
+    down_index = 1
+    while go_down:
+        move = [square_list[0] - down_index, square_list[1]]
+        down_index += 1
+        if 0 <= move[0] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_down = False
             else:
-                if board[key[0]+str(-1*x)] == "R" or board[key[0]+str(-1*x)] == "N" or board[key[0]+str(-1*x)] == "B" or board[key[0]+str(-1*x)] == "K" or board[key[0]+str(-1*x)] == "Q" or board[key[0]+str(-1*x)] == "P":   
-                        m_north.append(key[0]+str(-1*x))
-                        break
-                else:
-                        m_north.append(key[0]+str(-1*x))
-        for x in range(int(key[1])+1,9):
-            if board[key[0]+str(x)] == "r" or board[key[0]+str(x)] == "n" or board[key[0]+str(x)] == "b" or board[key[0]+str(x)] == "k" or board[key[0]+str(x)] == "q" or board[key[0]+str(x)] == "p":   
-                break
+                go_down = False
+        else:
+            go_down = False
+
+    # going right
+    go_right = True
+    right_index = 1
+    while go_right:
+        move = [square_list[0], square_list[1] + right_index]
+        right_index += 1
+        if 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_right = False
             else:
-                if board[key[0]+str(x)] == "R" or board[key[0]+str(x)] == "N" or board[key[0]+str(x)] == "B" or board[key[0]+str(x)] == "K" or board[key[0]+str(x)] == "Q" or board[key[0]+str(x)] == "P":     
-                        m_south.append(key[0]+str(x))
-                        break
-                else:
-                        m_south.append(key[0]+str(x))
+                go_right = False
+        else:
+            go_right = False
 
-        for x in range(alphabet.index(key[0])+1,8):
-            if board[alphabet[x]+key[1]] == "r" or board[alphabet[x]+key[1]] == "n" or board[alphabet[x]+key[1]] == "b" or board[alphabet[x]+key[1]] == "k" or board[alphabet[x]+key[1]] == "q" or board[alphabet[x]+key[1]] == "p":
-                break
+    # going left
+    go_left = True
+    left_index = 1
+    while go_left:
+        move = [square_list[0], square_list[1] - left_index]
+        left_index += 1
+        if 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_left = False
             else:
-                if board[alphabet[x]+key[1]] == "R" or board[alphabet[x]+key[1]] == "N" or board[alphabet[x]+key[1]] == "B" or board[alphabet[x]+key[1]] == "K" or board[alphabet[x]+key[1]] == "Q" or board[alphabet[x]+key[1]] == "P":       
-                        m_east.append(alphabet[x]+key[1])
-                        break
-                else:
-                        m_east.append(alphabet[x]+key[1])
+                go_left = False
+        else:
+            go_left = False
 
-        for x in range((-1*alphabet.index(key[0]))+1,1):
-            if board[alphabet[-1*x]+key[1]] == "r" or board[alphabet[-1*x]+key[1]] == "n" or board[alphabet[-1*x]+key[1]] == "b" or board[alphabet[-1*x]+key[1]] == "k" or board[alphabet[-1*x]+key[1]] == "q" or board[alphabet[-1*x]+key[1]] == "p":   
-                break
+    return legal_moves
+
+
+def knight_moves(board, colour_string, square_list):
+    """Find all legal moves for a knight."""
+    legal_moves = []
+
+    # set the colour of opponents pieces
+    if colour_string == "w":
+        opponent_pieces = black_pieces
+
+    if colour_string == "b":
+        opponent_pieces = white_pieces
+
+    move_1 = [square_list[0] - 2, square_list[1] + 1]
+    if 0 <= move_1[0] <= 7 and 0 <= move_1[1] <= 7:
+        if (
+            board[move_1[0]][move_1[1]] == ""
+            or board[move_1[0]][move_1[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_1)
+
+    move_2 = [square_list[0] - 1, square_list[1] + 2]
+    if 0 <= move_2[0] <= 7 and 0 <= move_2[1] <= 7:
+        if (
+            board[move_2[0]][move_2[1]] == ""
+            or board[move_2[0]][move_2[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_2)
+
+    move_3 = [square_list[0] + 1, square_list[1] + 2]
+    if 0 <= move_3[0] <= 7 and 0 <= move_3[1] <= 7:
+        if (
+            board[move_3[0]][move_3[1]] == ""
+            or board[move_3[0]][move_3[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_3)
+
+    move_4 = [square_list[0] + 2, square_list[1] + 1]
+    if 0 <= move_4[0] <= 7 and 0 <= move_4[1] <= 7:
+        if (
+            board[move_4[0]][move_4[1]] == ""
+            or board[move_4[0]][move_4[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_4)
+
+    move_5 = [square_list[0] + 2, square_list[1] - 1]
+    if 0 <= move_5[0] <= 7 and 0 <= move_5[1] <= 7:
+        if (
+            board[move_5[0]][move_5[1]] == ""
+            or board[move_5[0]][move_5[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_5)
+
+    move_6 = [square_list[0] + 1, square_list[1] - 2]
+    if 0 <= move_6[0] <= 7 and 0 <= move_6[1] <= 7:
+        if (
+            board[move_6[0]][move_6[1]] == ""
+            or board[move_6[0]][move_6[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_6)
+
+    move_7 = [square_list[0] - 1, square_list[1] - 2]
+    if 0 <= move_7[0] <= 7 and 0 <= move_7[1] <= 7:
+        if (
+            board[move_7[0]][move_7[1]] == ""
+            or board[move_7[0]][move_7[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_7)
+
+    move_8 = [square_list[0] - 2, square_list[1] - 1]
+    if 0 <= move_8[0] <= 7 and 0 <= move_8[1] <= 7:
+        if (
+            board[move_8[0]][move_8[1]] == ""
+            or board[move_8[0]][move_8[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_8)
+
+    return legal_moves
+
+
+def bishop_moves(board, colour_string, square_list):
+    """Find all legal moves for a bishop."""
+    legal_moves = []
+
+    if colour_string == "w":
+        opponent_pieces = black_pieces
+
+    if colour_string == "b":
+        opponent_pieces = white_pieces
+
+    # going up-right
+    go_upright = True
+    upright_index = 1
+    while go_upright:
+        move = [square_list[0] + upright_index, square_list[1] + upright_index]
+        upright_index += 1
+        if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_upright = False
             else:
-                if board[alphabet[-1*x]+key[1]] == "R" or board[alphabet[-1*x]+key[1]] == "N" or board[alphabet[-1*x]+key[1]] == "B" or board[alphabet[-1*x]+key[1]] == "K" or board[alphabet[-1*x]+key[1]] == "Q" or board[alphabet[-1*x]+key[1]] == "P":     
-                        m_west.append(alphabet[-1*x]+key[1])
-                        break
-                else:
-                        m_west.append(alphabet[-1*x]+key[1])
-        m=[]
-        m.append([m_north,m_east,m_south,m_west])
-        print("rook")
-        print(m)
-        return m
+                go_upright = False
+        else:
+            go_upright = False
 
-
-    if board[key] == "b":
-        #print("bishop")
-        #clockwise from upper right diagonal
-        m = []
-        m_NE = []
-        m_SE = []
-        m_SW = []
-        m_NW = []
-        n_dist = number_index-1
-        e_dist = 7-letter_index
-        s_dist = 8-number_index
-        w_dist = letter_index
-        for x in range(1, min(n_dist,e_dist)+1):
-            if board[alphabet[letter_index + x]+str(number_index - x)] == "r" or board[alphabet[letter_index + x]+str(number_index - x)] == "n" or board[alphabet[letter_index + x]+str(number_index - x)] == "b" or board[alphabet[letter_index + x]+str(number_index - x)] == "k" or board[alphabet[letter_index + x]+str(number_index - x)] == "q" or board[alphabet[letter_index + x]+str(number_index - x)] == "p":         
-                break
+    # going down-right
+    go_downright = True
+    downright_index = 1
+    while go_downright:
+        move = [square_list[0] - downright_index, square_list[1] + downright_index]
+        downright_index += 1
+        if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_downright = False
             else:
-                if board[alphabet[letter_index + x]+str(number_index - x)] == "R" or board[alphabet[letter_index + x]+str(number_index - x)] == "N" or board[alphabet[letter_index + x]+str(number_index - x)] == "B" or board[alphabet[letter_index + x]+str(number_index - x)] == "K" or board[alphabet[letter_index + x]+str(number_index - x)] == "Q" or board[alphabet[letter_index + x]+str(number_index - x)] == "P":   
+                go_downright = False
+        else:
+            go_downright = False
 
-                        m_NE.append(alphabet[letter_index + x]+str(number_index - x))
-                        break
-                else:
-                        m_NE.append(alphabet[letter_index + x]+str(number_index - x))   
-
-
-
-
-
-
-
-        for x in range(1, min(s_dist,e_dist)+1):
-            if board[alphabet[letter_index + x]+str(number_index + x)] == "r" or board[alphabet[letter_index + x]+str(number_index + x)] == "n" or board[alphabet[letter_index + x]+str(number_index + x)] == "b" or board[alphabet[letter_index + x]+str(number_index + x)] == "k" or board[alphabet[letter_index + x]+str(number_index + x)] == "q" or board[alphabet[letter_index + x]+str(number_index + x)] == "p":
-                break
+    # going down-left
+    go_downleft = True
+    downleft_index = 1
+    while go_downleft:
+        move = [square_list[0] - downleft_index, square_list[1] - downleft_index]
+        downleft_index += 1
+        if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_downleft = False
             else:
-                if board[alphabet[letter_index + x]+str(number_index + x)] == "R" or board[alphabet[letter_index + x]+str(number_index + x)] == "N" or board[alphabet[letter_index + x]+str(number_index + x)] == "B" or board[alphabet[letter_index + x]+str(number_index + x)] == "K" or board[alphabet[letter_index + x]+str(number_index + x)] == "Q" or board[alphabet[letter_index + x]+str(number_index + x)] == "P":   
+                go_downleft = False
+        else:
+            go_downleft = False
 
-                                m_SE.append(alphabet[letter_index + x]+str(number_index + x))
-                                break
-
-                else:
-                                m_SE.append(alphabet[letter_index + x]+str(number_index + x))
-
-
-        for x in range(1, min(s_dist,w_dist)+1):
-            if board[alphabet[letter_index - x]+str(number_index + x)] == "r" or board[alphabet[letter_index - x]+str(number_index + x)] == "n" or board[alphabet[letter_index - x]+str(number_index + x)] == "b" or board[alphabet[letter_index - x]+str(number_index + x)] == "k" or board[alphabet[letter_index - x]+str(number_index + x)] == "q" or board[alphabet[letter_index - x]+str(number_index + x)] == "p":
-                break
+    # going up-left
+    go_upleft = True
+    upleft_index = 1
+    while go_upleft:
+        move = [square_list[0] + upleft_index, square_list[1] - upleft_index]
+        upleft_index += 1
+        if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_upleft = False
             else:
-                if board[alphabet[letter_index - x]+str(number_index + x)] == "R" or board[alphabet[letter_index - x]+str(number_index + x)] == "N" or board[alphabet[letter_index - x]+str(number_index + x)] == "B" or board[alphabet[letter_index - x]+str(number_index + x)] == "K" or board[alphabet[letter_index - x]+str(number_index + x)] == "Q" or board[alphabet[letter_index - x]+str(number_index + x)] == "P":   
+                go_upleft = False
+        else:
+            go_upleft = False
 
-                                m_SW.append(alphabet[letter_index - x]+str(number_index + x))
-                                break
-                else:
-                                m_SW.append(alphabet[letter_index - x]+str(number_index + x))
+    return legal_moves
 
 
-        for x in range(1, min(n_dist,w_dist)+1):
-            if board[alphabet[letter_index - x]+str(number_index - x)] == "r" or board[alphabet[letter_index - x]+str(number_index - x)] == "n" or board[alphabet[letter_index - x]+str(number_index - x)] == "b" or board[alphabet[letter_index - x]+str(number_index - x)] == "k" or board[alphabet[letter_index - x]+str(number_index - x)] == "q" or board[alphabet[letter_index - x]+str(number_index - x)] == "p":
-                break
+def queen_moves(board, colour_string, square_list):
+    """Find all legal moves for a queen."""
+    legal_moves = []
+
+    if colour_string == "w":
+        opponent_pieces = black_pieces
+
+    if colour_string == "b":
+        opponent_pieces = white_pieces
+
+        # going up
+    go_up = True
+    up_index = 1
+    while go_up:
+        move = [square_list[0] + up_index, square_list[1]]
+        up_index += 1
+        if 0 <= move[0] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_up = False
             else:
-                if board[alphabet[letter_index - x]+str(number_index - x)] == "R" or board[alphabet[letter_index - x]+str(number_index - x)] == "N" or board[alphabet[letter_index - x]+str(number_index - x)] == "B" or board[alphabet[letter_index - x]+str(number_index - x)] == "K" or board[alphabet[letter_index - x]+str(number_index - x)] == "Q" or board[alphabet[letter_index + x]+str(number_index - x)] == "P":   
+                go_up = False
+        else:
+            go_up = False
 
-                                m_NW.append(alphabet[letter_index - x]+str(number_index - x))
-                                break
-                else:
-                                m_NW.append(alphabet[letter_index - x]+str(number_index - x))
-
-
-        m.append([m_NE,m_SE,m_SW,m_NW])
-        print("bishop")
-        print(m)
-        return m
-
-    if board[key] == "q":
-          #print("queen")
-        m = []
-        m_north = []
-        m_south = []
-        m_east = []
-        m_west = []
-        m_NE = []
-        m_SE = []
-        m_SW = []
-        m_NW = []
-        n_dist = number_index-1
-        e_dist = 7-letter_index
-        s_dist = 8-number_index
-        w_dist = letter_index
-        for x in range(1, min(n_dist,e_dist)+1):
-            if board[alphabet[letter_index + x]+str(number_index - x)] == "r" or board[alphabet[letter_index + x]+str(number_index - x)] == "n" or board[alphabet[letter_index + x]+str(number_index - x)] == "b" or board[alphabet[letter_index + x]+str(number_index - x)] == "k" or board[alphabet[letter_index + x]+str(number_index - x)] == "q" or board[alphabet[letter_index + x]+str(number_index - x)] == "p":         
-                break
+    # going down
+    go_down = True
+    down_index = 1
+    while go_down:
+        move = [square_list[0] - down_index, square_list[1]]
+        down_index += 1
+        if 0 <= move[0] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_down = False
             else:
-                if board[alphabet[letter_index + x]+str(number_index - x)] == "R" or board[alphabet[letter_index + x]+str(number_index - x)] == "N" or board[alphabet[letter_index + x]+str(number_index - x)] == "B" or board[alphabet[letter_index + x]+str(number_index - x)] == "K" or board[alphabet[letter_index + x]+str(number_index - x)] == "Q" or board[alphabet[letter_index + x]+str(number_index - x)] == "P":   
+                go_down = False
+        else:
+            go_down = False
 
-                        m_NE.append(alphabet[letter_index + x]+str(number_index - x))
-                        break
-                else:
-                        m_NE.append(alphabet[letter_index + x]+str(number_index - x))   
-
-
-
-
-
-
-
-        for x in range(1, min(s_dist,e_dist)+1):
-            if board[alphabet[letter_index + x]+str(number_index + x)] == "r" or board[alphabet[letter_index + x]+str(number_index + x)] == "n" or board[alphabet[letter_index + x]+str(number_index + x)] == "b" or board[alphabet[letter_index + x]+str(number_index + x)] == "k" or board[alphabet[letter_index + x]+str(number_index + x)] == "q" or board[alphabet[letter_index + x]+str(number_index + x)] == "p":
-                break
+    # going right
+    go_right = True
+    right_index = 1
+    while go_right:
+        move = [square_list[0], square_list[1] + right_index]
+        right_index += 1
+        if 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_right = False
             else:
-                if board[alphabet[letter_index + x]+str(number_index + x)] == "R" or board[alphabet[letter_index + x]+str(number_index + x)] == "N" or board[alphabet[letter_index + x]+str(number_index + x)] == "B" or board[alphabet[letter_index + x]+str(number_index + x)] == "K" or board[alphabet[letter_index + x]+str(number_index + x)] == "Q" or board[alphabet[letter_index + x]+str(number_index + x)] == "P":   
+                go_right = False
+        else:
+            go_right = False
 
-                                m_SE.append(alphabet[letter_index + x]+str(number_index + x))
-                                break
-
-                else:
-                                m_SE.append(alphabet[letter_index + x]+str(number_index + x))
-
-
-        for x in range(1, min(s_dist,w_dist)+1):
-            if board[alphabet[letter_index - x]+str(number_index + x)] == "r" or board[alphabet[letter_index - x]+str(number_index + x)] == "n" or board[alphabet[letter_index - x]+str(number_index + x)] == "b" or board[alphabet[letter_index - x]+str(number_index + x)] == "k" or board[alphabet[letter_index - x]+str(number_index + x)] == "q" or board[alphabet[letter_index - x]+str(number_index + x)] == "p":
-                break
+    # going left
+    go_left = True
+    left_index = 1
+    while go_left:
+        move = [square_list[0], square_list[1] - left_index]
+        left_index += 1
+        if 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_left = False
             else:
-                if board[alphabet[letter_index - x]+str(number_index + x)] == "R" or board[alphabet[letter_index - x]+str(number_index + x)] == "N" or board[alphabet[letter_index - x]+str(number_index + x)] == "B" or board[alphabet[letter_index - x]+str(number_index + x)] == "K" or board[alphabet[letter_index - x]+str(number_index + x)] == "Q" or board[alphabet[letter_index - x]+str(number_index + x)] == "P":   
+                go_left = False
+        else:
+            go_left = False
 
-                                m_SW.append(alphabet[letter_index - x]+str(number_index + x))
-                                break
-                else:
-                                m_SW.append(alphabet[letter_index - x]+str(number_index + x))
-
-
-        for x in range(1, min(n_dist,w_dist)+1):
-            if board[alphabet[letter_index - x]+str(number_index - x)] == "r" or board[alphabet[letter_index - x]+str(number_index - x)] == "n" or board[alphabet[letter_index - x]+str(number_index - x)] == "b" or board[alphabet[letter_index - x]+str(number_index - x)] == "k" or board[alphabet[letter_index - x]+str(number_index - x)] == "q" or board[alphabet[letter_index - x]+str(number_index - x)] == "p":
-                break
+    # going up-right
+    go_upright = True
+    upright_index = 1
+    while go_upright:
+        move = [square_list[0] + upright_index, square_list[1] + upright_index]
+        upright_index += 1
+        if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_upright = False
             else:
-                if board[alphabet[letter_index - x]+str(number_index - x)] == "R" or board[alphabet[letter_index - x]+str(number_index - x)] == "N" or board[alphabet[letter_index - x]+str(number_index - x)] == "B" or board[alphabet[letter_index - x]+str(number_index - x)] == "K" or board[alphabet[letter_index - x]+str(number_index - x)] == "Q" or board[alphabet[letter_index + x]+str(number_index - x)] == "P":   
+                go_upright = False
+        else:
+            go_upright = False
 
-                                m_NW.append(alphabet[letter_index - x]+str(number_index - x))
-                                break
-                else:
-                                m_NW.append(alphabet[letter_index - x]+str(number_index - x))
-
-        for x in range((-1*int(key[1]))+1,0):
-            if board[key[0]+str(-1*x)] == "r" or board[key[0]+str(-1*x)] == "n" or board[key[0]+str(-1*x)] == "b" or board[key[0]+str(-1*x)] == "k" or board[key[0]+str(-1*x)] == "q" or board[key[0]+str(-1*x)] == "p":
-                break
+    # going down-right
+    go_downright = True
+    downright_index = 1
+    while go_downright:
+        move = [square_list[0] - downright_index, square_list[1] + downright_index]
+        downright_index += 1
+        if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_downright = False
             else:
-                if board[key[0]+str(-1*x)] == "R" or board[key[0]+str(-1*x)] == "N" or board[key[0]+str(-1*x)] == "B" or board[key[0]+str(-1*x)] == "K" or board[key[0]+str(-1*x)] == "Q" or board[key[0]+str(-1*x)] == "P":   
-                        m_north.append(key[0]+str(-1*x))
-                        break
-                else:
-                        m_north.append(key[0]+str(-1*x))
-        for x in range(int(key[1])+1,9):
-            if board[key[0]+str(x)] == "r" or board[key[0]+str(x)] == "n" or board[key[0]+str(x)] == "b" or board[key[0]+str(x)] == "k" or board[key[0]+str(x)] == "q" or board[key[0]+str(x)] == "p":   
-                break
+                go_downright = False
+        else:
+            go_downright = False
+
+    # going down-left
+    go_downleft = True
+    downleft_index = 1
+    while go_downleft:
+        move = [square_list[0] - downleft_index, square_list[1] - downleft_index]
+        downleft_index += 1
+        if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_downleft = False
             else:
-                if board[key[0]+str(x)] == "R" or board[key[0]+str(x)] == "N" or board[key[0]+str(x)] == "B" or board[key[0]+str(x)] == "K" or board[key[0]+str(x)] == "Q" or board[key[0]+str(x)] == "P":     
-                        m_south.append(key[0]+str(x))
-                        break
-                else:
-                        m_south.append(key[0]+str(x))
+                go_downleft = False
+        else:
+            go_downleft = False
 
-        for x in range(alphabet.index(key[0])+1,8):
-            if board[alphabet[x]+key[1]] == "r" or board[alphabet[x]+key[1]] == "n" or board[alphabet[x]+key[1]] == "b" or board[alphabet[x]+key[1]] == "k" or board[alphabet[x]+key[1]] == "q" or board[alphabet[x]+key[1]] == "p":
-                break
+    # going up-left
+    go_upleft = True
+    upleft_index = 1
+    while go_upleft:
+        move = [square_list[0] + upleft_index, square_list[1] - upleft_index]
+        upleft_index += 1
+        if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
+            if board[move[0]][move[1]] == "":
+                legal_moves.append(move)
+            elif board[move[0]][move[1]] in opponent_pieces:
+                legal_moves.append(move)
+                go_upleft = False
             else:
-                if board[alphabet[x]+key[1]] == "R" or board[alphabet[x]+key[1]] == "N" or board[alphabet[x]+key[1]] == "B" or board[alphabet[x]+key[1]] == "K" or board[alphabet[x]+key[1]] == "Q" or board[alphabet[x]+key[1]] == "P":       
-                        m_east.append(alphabet[x]+key[1])
-                        break
-                else:
-                        m_east.append(alphabet[x]+key[1])
+                go_upleft = False
+        else:
+            go_upleft = False
 
-        for x in range((-1*alphabet.index(key[0]))+1,1):
-            if board[alphabet[-1*x]+key[1]] == "r" or board[alphabet[-1*x]+key[1]] == "n" or board[alphabet[-1*x]+key[1]] == "b" or board[alphabet[-1*x]+key[1]] == "k" or board[alphabet[-1*x]+key[1]] == "q" or board[alphabet[-1*x]+key[1]] == "p":   
-                break
-            else:
-                if board[alphabet[-1*x]+key[1]] == "R" or board[alphabet[-1*x]+key[1]] == "N" or board[alphabet[-1*x]+key[1]] == "B" or board[alphabet[-1*x]+key[1]] == "K" or board[alphabet[-1*x]+key[1]] == "Q" or board[alphabet[-1*x]+key[1]] == "P":     
-                        m_west.append(alphabet[-1*x]+key[1])
-                        break
-                else:
-                        m_west.append(alphabet[-1*x]+key[1])
-        m.append([m_north,m_east,m_south,m_west,m_NE,m_SE,m_SW,m_NW])
-        print("queen")
-        print(m)
-        return m
+    return legal_moves
 
 
+def king_moves(board, colour_string, square_list):
+    """Find all legal moves for a king."""
+    legal_moves = []
 
-    if board[key] == "n":
-                 #using new alphabet to avoid index error in alphabet function
-                 m = []
-                 a = n_alphabet[n_letter_index - 1]+str(number_index - 2)
-                 b = n_alphabet[n_letter_index + 1]+str(number_index - 2)
-                 c = n_alphabet[n_letter_index + 2]+str(number_index - 1)
-                 d = n_alphabet[n_letter_index + 2]+str(number_index + 1)
-                 e = n_alphabet[n_letter_index + 1]+str(number_index + 2)
-                 f = n_alphabet[n_letter_index - 1]+str(number_index + 2)
-                 g = n_alphabet[n_letter_index - 2]+str(number_index + 1)
-                 h = n_alphabet[n_letter_index - 2]+str(number_index - 1)
-                 consider = [a,b,c,d,e,f,g,h]
-                 for x in range(0,8):
-                          try:
-                             if board[consider[x]] == "p" or board[consider[x]] == "r" or board[consider[x]] == "b" or board[consider[x]] == "n" or board[consider[x]] == "q" or board[consider[x]] == "k":
-                                 pass
-                             else:
-                                 m.append(consider[x])
-                          except(KeyError):
-                              pass
-                 print("knight")
-                 print(m)
-                 return m
+    if colour_string == "w":
+        opponent_pieces = black_pieces
+
+    if colour_string == "b":
+        opponent_pieces = white_pieces
+
+    move_1 = [square_list[0] + 1, square_list[1]]
+    if 0 <= move_1[0] <= 7 and 0 <= move_1[1] <= 7:
+        if (
+            board[move_1[0]][move_1[1]] == ""
+            or board[move_1[0]][move_1[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_1)
+
+    move_2 = [square_list[0] + 1, square_list[1] + 1]
+    if 0 <= move_2[0] <= 7 and 0 <= move_2[1] <= 7:
+        if (
+            board[move_2[0]][move_2[1]] == ""
+            or board[move_2[0]][move_2[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_2)
+
+    move_3 = [square_list[0], square_list[1] + 1]
+    if 0 <= move_3[0] <= 7 and 0 <= move_3[1] <= 7:
+        if (
+            board[move_3[0]][move_3[1]] == ""
+            or board[move_3[0]][move_3[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_3)
+
+    move_4 = [square_list[0] - 1, square_list[1] + 1]
+    if 0 <= move_4[0] <= 7 and 0 <= move_4[1] <= 7:
+        if (
+            board[move_4[0]][move_4[1]] == ""
+            or board[move_4[0]][move_4[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_4)
+
+    move_5 = [square_list[0] - 1, square_list[1]]
+    if 0 <= move_5[0] <= 7 and 0 <= move_5[1] <= 7:
+        if (
+            board[move_5[0]][move_5[1]] == ""
+            or board[move_5[0]][move_5[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_5)
+
+    move_6 = [square_list[0] - 1, square_list[1] - 1]
+    if 0 <= move_6[0] <= 7 and 0 <= move_6[1] <= 7:
+        if (
+            board[move_6[0]][move_6[1]] == ""
+            or board[move_6[0]][move_6[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_6)
+
+    move_7 = [square_list[0], square_list[1] - 1]
+    if 0 <= move_7[0] <= 7 and 0 <= move_7[1] <= 7:
+        if (
+            board[move_7[0]][move_7[1]] == ""
+            or board[move_7[0]][move_7[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_7)
+
+    move_8 = [square_list[0] + 1, square_list[1] - 1]
+    if 0 <= move_8[0] <= 7 and 0 <= move_8[1] <= 7:
+        if (
+            board[move_8[0]][move_8[1]] == ""
+            or board[move_8[0]][move_8[1]] in opponent_pieces
+        ):
+            legal_moves.append(move_8)
+
+    return legal_moves
 
 
-    if board[key] == "k":
-        m = []
-        n_letter_index = n_alphabet.index(key[0])
-        a = n_alphabet[n_letter_index]+str(number_index - 1)
-        b = n_alphabet[n_letter_index + 1]+str(number_index - 1)
-        c = n_alphabet[n_letter_index + 1]+str(number_index)
-        d = n_alphabet[n_letter_index + 1]+str(number_index + 1)
-        e = n_alphabet[n_letter_index]+str(number_index + 1)
-        f = n_alphabet[n_letter_index - 1]+str(number_index + 1)
-        g = n_alphabet[n_letter_index - 1]+str(number_index)
-        h = n_alphabet[n_letter_index - 1]+str(number_index - 1)
-        consider = [a,b,c,d,e,f,g,h]
-        for x in range(0,8):
-                          try:
-                             if board[consider[x]] == "p" or board[consider[x]] == "r" or board[consider[x]] == "b" or board[consider[x]] == "n" or board[consider[x]] == "q" or board[consider[x]] == "k":
-                                 pass
-                             else:
-                                 m.append(consider[x])
-                          except(KeyError):
-                              pass
-        print("king")
-        print(m)
-        return m
+# Function for outputting all legal moves
 
 
-def options():
-            for x in range(0,64):
-                    tot_moves.append(moves(board_list[x]))
-            print(tot_moves)
+def find_moves(board, colour_string):
+    """Finds all the legal moves for a player"""
+    legal_moves = []
 
+    player_pieces = white_pieces if colour_string == "w" else black_pieces
 
+    for row_index in range(8):
+        for column_index in range(8):
+            piece = board[row_index][column_index]
+            if piece in player_pieces:
+                if piece == "P" or piece == "p":
+                    legal_moves.append(
+                        [
+                            "Pawn",
+                            pawn_moves(board, colour_string, [row_index, column_index]),
+                        ]
+                    )
+                if piece == "R" or piece == "r":
+                    legal_moves.append(
+                        [
+                            "Rook",
+                            rook_moves(board, colour_string, [row_index, column_index]),
+                        ]
+                    )
+                if piece == "N" or piece == "n":
+                    legal_moves.append(
+                        [
+                            "Knight",
+                            knight_moves(
+                                board, colour_string, [row_index, column_index]
+                            ),
+                        ]
+                    )
+                if piece == "B" or piece == "b":
+                    legal_moves.append(
+                        [
+                            "Bishop",
+                            bishop_moves(
+                                board, colour_string, [row_index, column_index]
+                            ),
+                        ]
+                    )
+                if piece == "Q" or piece == "q":
+                    legal_moves.append(
+                        [
+                            "Queen",
+                            queen_moves(
+                                board, colour_string, [row_index, column_index]
+                            ),
+                        ]
+                    )
+                if piece == "K" or piece == "k":
+                    legal_moves.append(
+                        [
+                            "King",
+                            king_moves(board, colour_string, [row_index, column_index]),
+                        ]
+                    )
 
-def move(a,b):         
-                board[b]=board[a]
-                board[a]="."
+    return legal_moves
