@@ -3,15 +3,9 @@
 ---
 
 ### Inputs:
-    - board:            e.g.    "RNBQKVNR, PPPPPPPPP, ........, ........., ........., ........., ppppppppp, rnbqkbnr"
-                                [[R,N,B,Q,K,N,E,V], asdsddasd, asdasdasd, asdasdsad, asdasdasd, asdasd, sdddsds,  asdasdad]
-                                {00: R, 01: N, 02: .........
-                                10: P, .........
-                                .
-                                .
-                                .
-                                .
-                                ...... 87: n, 88:r}
+    - board: list of 8 lists of 8 elements, each representing a square on the board. e.g. board[0][0] is the square A1 on the chess board.
+
+    - colour to move: string - "w" (white) or "b" (black)
 
 ### Output:
     - Legal move
