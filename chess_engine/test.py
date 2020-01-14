@@ -1,13 +1,27 @@
-# #testing here
-from engine import board, moves, move
-# import random
+"""Testing file."""
 
-# for (keylewis,_) in board.items():
-#     print(keylewis)
-#     print(moves(keylewis))
-#     print("---")
+from rules import starting_board
+from engine import find_moves
 
+x = find_moves(starting_board, "w")
 
-move("E8","E5")
-print(board["E5"])
-print(moves("E5"))
+for i in x:
+    print(i)
+
+print("-----")
+
+board_1 = [
+    ["", "N", "B", "Q", "K", "B", "N", "R"],
+    ["", "P", "P", "P", "P", "P", "P", "P"],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "R", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["p", "p", "p", "p", "p", "p", "p", "p"],
+    ["r", "n", "b", "q", "k", "b", "n", "r"],
+]
+
+y = find_moves(board_1, "w")
+
+for i in y:
+    print(i)
