@@ -1,20 +1,34 @@
 """Testing file."""
 
+
+import numpy
+
 from rules import starting_board
 from legal_moves import find_moves
 from interface import move_to_string, execute_move, print_board
 from brain import play_game
 
-play_game(starting_board, "w")
+board = starting_board
+result = play_game(board, "w")
 
+# moves_list = []
 
+# for index in range(10):
+#     board = starting_board
+#     result = play_game(board, "w")
+#     moves_list.append(result[1])
 
+# avg_moves = numpy.mean(moves_list)
 
+# print(avg_moves)
 
 
 # x = find_moves(starting_board, "w")
 
+# print(x)
+
 # for i in x:
+#     print(i)
 #     print(move_to_string(starting_board, i))
 
 # print("-----")

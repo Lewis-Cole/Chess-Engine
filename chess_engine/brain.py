@@ -25,6 +25,11 @@ def play_game(board, colour_string):
         moves_taken += 1
         print_board(board)
 
+        if colour_string == "w":
+            colour_string = "b"
+        else:
+            colour_string = "w"
+
         w_king_off = True
         b_king_off = True
 
@@ -44,3 +49,5 @@ def play_game(board, colour_string):
         winner = "White"
     
     print("%s won the game in %s moves." % (winner, moves_taken))
+
+    return (winner, moves_taken)
