@@ -12,6 +12,9 @@
 ### Give brain strategy
     - board eval with points
 
+### GUI
+    - display board
+
 ---
 
 ### Inputs:
