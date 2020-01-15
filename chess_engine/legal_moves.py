@@ -64,7 +64,7 @@ def pawn_moves(board, colour_string, square_list):
                 if board[move_4[0]][move_4[1]] in white_pieces:
                     legal_moves.append(move_4)
 
-    return ["Pawn \t from %s to %s" % (square_list, legal_moves), (square_list, legal_moves)]
+    return legal_moves
 
 
 def rook_moves(board, colour_string, square_list):
@@ -146,7 +146,7 @@ def rook_moves(board, colour_string, square_list):
         else:
             go_left = False
 
-    return ["Rook \t from %s to %s" % (square_list, legal_moves), (square_list, legal_moves)]
+    return legal_moves
 
 
 def knight_moves(board, colour_string, square_list):
@@ -224,7 +224,7 @@ def knight_moves(board, colour_string, square_list):
         ):
             legal_moves.append(move_8)
 
-    return ["Knight \t from %s to %s" % (square_list, legal_moves), (square_list, legal_moves)]
+    return legal_moves
 
 
 def bishop_moves(board, colour_string, square_list):
@@ -305,7 +305,7 @@ def bishop_moves(board, colour_string, square_list):
         else:
             go_upleft = False
 
-    return ["Bishop \t from %s to %s" % (square_list, legal_moves), (square_list, legal_moves)]
+    return legal_moves
 
 
 def queen_moves(board, colour_string, square_list):
@@ -454,7 +454,7 @@ def queen_moves(board, colour_string, square_list):
         else:
             go_upleft = False
 
-    return ["Queen \t from %s to %s" % (square_list, legal_moves), (square_list, legal_moves)]
+    return legal_moves
 
 
 def king_moves(board, colour_string, square_list):
@@ -531,7 +531,7 @@ def king_moves(board, colour_string, square_list):
         ):
             legal_moves.append(move_8)
 
-    return ["King \t from %s to %s" % (square_list, legal_moves), (square_list, legal_moves)]
+    return legal_moves
 
 
 # Function for outputting all legal moves
@@ -539,7 +539,7 @@ def king_moves(board, colour_string, square_list):
 
 def find_moves(board, colour_string):
     """Finds all the legal moves for a player"""
-    legal_moves = []
+    all_moves = []
 
     player_pieces = white_pieces if colour_string == "w" else black_pieces
 
@@ -547,29 +547,35 @@ def find_moves(board, colour_string):
         for column_index in range(8):
             piece = board[row_index][column_index]
             if piece in player_pieces:
+                square_list = [row_index, column_index]
                 if piece == "P" or piece == "p":
-                    legal_moves.append(
-                        pawn_moves(board, colour_string, [row_index, column_index])[0]
-                    )
+                    for move in pawn_moves(board, colour_string, square_list):
+                        all_moves.append((square_list, move))
+
                 if piece == "R" or piece == "r":
-                    legal_moves.append(
-                        rook_moves(board, colour_string, [row_index, column_index])[0]
-                    )
+                    for move in rook_moves(board, colour_string, square_list):
+                        all_moves.append((square_list, move))
+
                 if piece == "N" or piece == "n":
-                    legal_moves.append(
-                        knight_moves(board, colour_string, [row_index, column_index])[0]
-                    )
+                    for move in knight_moves(board, colour_string, square_list):
+                        all_moves.append((square_list, move))
+
                 if piece == "B" or piece == "b":
-                    legal_moves.append(
-                        bishop_moves(board, colour_string, [row_index, column_index])[0]
-                    )
+                    for move in bishop_moves(board, colour_string, square_list):
+                        all_moves.append((square_list, move))
+
                 if piece == "Q" or piece == "q":
-                    legal_moves.append(
-                        queen_moves(board, colour_string, [row_index, column_index])[0]
-                    )
+                    for move in queen_moves(board, colour_string, square_list):
+                        all_moves.append((square_list, move))
+
                 if piece == "K" or piece == "k":
-                    legal_moves.append(
-                        king_moves(board, colour_string, [row_index, column_index])[0]
-                    )
+                    for move in king_moves(board, colour_string, square_list):
+                        all_moves.append((square_list, move))
+
+    legal_moves = []
+
+    for move in all_moves:
+        if move[1] != []:
+            legal_moves.append(move)
 
     return legal_moves
