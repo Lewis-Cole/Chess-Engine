@@ -3,7 +3,7 @@
 from rules import starting_board
 from legal_moves import find_moves
 
-x = find_moves(starting_board, "w")
+x = find_moves(starting_board, "b")
 
 for i in x:
     print(i)
